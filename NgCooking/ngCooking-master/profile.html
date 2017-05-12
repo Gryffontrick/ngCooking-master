@@ -1,0 +1,61 @@
+﻿<!--<div class="content" id="content_communaute_details">-->
+    <section class="section details">
+        <div class="row">
+            <div class="col-vxs-12 col-xs-6 col-sm-5">
+                <div class="avatar-wrap">
+                    <img class="avatar" src="{{cook.picture}}" alt="{{cook.firstname}} {{cook.surname}}">
+                </div>
+            </div>
+            <div class="col-vxs-12 col-xs-6 col-sm-7">
+                <div class="infos">
+                    <h1 class="name">{{cook.firstname}} {{cook.surname}}</h1>
+                    <p class="level">
+                        <span class="stars">
+                            <span class="glyphicon glyphicon-star" ng-repeat="n in cookLevels | limitTo:cook.level"></span>
+                        </span>
+                        <span class="status">{{getCookLevel(cook.level)}}</span>
+                    </p>
+                    <p class="city"><span class="fwb">Ville : </span>{{cook.city}}</p>
+                    <p class="age"><span class="fwb">Age : </span>{{cook.age}} ans</p>
+                    <p class="shared" ng-show="cook.recipes.length"><span class="fwb">{{(ngCookingUser.id == cook.id) && "Vous" || cook.firstname}}</span> {{(ngCookingUser.id == cook.id) && " avez " || " a "}}partagé <span class="nb">{{cook.recipes.length}} recettes</span></p>
+                    <p class="shared" ng-show="cook.recipes.length == 0"><span class="fwb">{{(ngCookingUser.id == cook.id) && "Vous" || cook.firstname}}</span> {{(ngCookingUser.id == cook.id) && " n'avez " || " n'a "}}partagé<span class="nb"> aucune recette! :'(</span></p>
+                    <p class="bio"><span class="fwb">BIO : </span>{{cook.bio}}</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Afficher le bloc ci-dessous uniquement si lutilisateur connecté se rend sur sa propre page -->
+    <section class="section newrecette" ng-show="ngCookingUser">
+        <div class="row">
+            <div class="col-xs-12">
+                <p class="c">Vous en avez sous la toque ?!</p>
+                <p class="b">
+                    <a href="#/recipe_new" class="btn btn_color1"><span class="glyphicon glyphicon-plus-sign"></span><span>Créez une nouvelle recette</span></a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" ng-show="cook.recipes.length">
+        <h2 class="title">~ Les recettes de {{cook.firstname}} ~</h2>
+        <div class="recettes row">
+            <div class="col-xs-6 col-sm-3 recette" ng-repeat="recipe in cook.recipes | orderBy:'-creationDate'">
+                <a href="#/recipe/{{recipe.id}}">
+                    <img src="img/recettes/{{recipe.picture}}" alt="{{recipe.name}}">
+                    <div class="top" title="note : {{recipe.ratings}}/{{maxHearts.length}}" ng-show="recipe.ratings">
+                        <span class="note">
+                            <span class="glyphicon glyphicon-heart" ng-repeat="n in maxHearts | limitTo:recipe.ratings"></span>
+                        </span>
+                    </div>
+                    <div class="bot">
+                        <p class="name">{{recipe.name}}</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+    <section class="section" ng-hide="cook.recipes.length">
+        <h2 class="title">{{(ngCookingUser.id == cook.id) && "Vous n'avez" || cook.firstname + " n'a" }} pas encore créé de recette! :'(</h2>
+    </section>
+<!--</div>-->

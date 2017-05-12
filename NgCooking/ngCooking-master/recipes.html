@@ -1,0 +1,144 @@
+﻿<h1 class="page-title">Les recettes</h1>
+
+<section class="section">
+    <h2 class="title">~ Trouver une recette ~</h2>
+    <div id="new_recipe" ng-show="ngCookingUser"><a href="#/recipe_new">Nouvelle recette</a></div>
+    <div class="panel">
+        <div class="row imgback">
+            <div class="col-xs-3"></div>
+            <div class="col-xs-12 col-sm-9 fp">
+                <div class="filters">
+                    <form action="">
+                        <div class="filter">
+                            <p><label for="">Nom de la recette</label></p>
+                            <p><input type="text" ng-model="recipeSearch.name" placeholder="ex: Tajine de poulet"></p>
+                        </div>
+
+                        <div>
+                            <p>
+                                <label for="">Ingrédients de la recette</label>
+                            </p>
+                            <p class="line ac">
+                                <select class="recipeSearchSelect" name="" id="" ng-model="recipeSearch.ingredientsCategoriesFilter">
+                                    <option value="">Catégories</option>
+                                    <option value="{{ingredientCategory.id}}" ng-selected="{{ingredientCategory.id == currentIngredientCategoryId}}" ng-repeat="ingredientCategory in ingredientsCategories | orderBy:'nameToDisplay'">{{ingredientCategory.nameToDisplay}}</option>
+                                </select>
+                                <span class="span-label"><span class="glyphicon glyphicon-menu-right nm"></span></span>
+                                <select class="recipeSearchSelect"  name="" id="" ng-model="currentIngredientId">
+                                    <option value="{{ingredient.id}}" ng-selected="{{ingredient.id == currentIngredientId}}" ng-repeat="ingredient in ingredients | filter:{category:recipeSearch.ingredientsCategoriesFilter}">{{ingredient.name}}</option>
+                                </select>
+                                <button type="button" class="btn btn_color3" ng-click="addIngredient()"><span class="glyphicon glyphicon-plus"></span></button>
+                            </p>
+                            <div class="ingredients_list" ng-show="recipeSearch.ingredients.length">
+                                <ul class="list ac">
+                                    <!-- Note : Problème dans "track by"; à règler -->
+                                    <li class="item" ng-repeat="LI in recipeSearch.ingredients track by LI.id">
+                                        <img class="item-img" src="img/ingredients/{{LI.picture}}" alt="{{LI.name}}" title="{{LI.name}}">
+                                        <p class="item-name" title="{{LI.name}}">{{LI.name}}</p>
+                                        <button type="button" class="remove_ingredient" ng-click="removeIngredient(LI.id)"><span class="glyphicon glyphicon-remove"></span></button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!--
+                            <div class="filter">
+                                <p><label for="">Ingrédient(s) utlisé(s) pour la recette</label></p>
+                                <p><input type="text" placeholder="ex: poulet;oeuf;farine"></p>
+                            </div>
+                        -->
+                        <div class="filter">
+                            <p><label for="">Valeur calorique de la recette <span class="fwn">(kcal/100g)</span></label></p>
+                            <p>
+                                <span class="span-label">entre :</span>
+                                <input type="number" class="mr0" ng-model="recipeSearch.minCalories" placeholder="ex: 450">
+                                <span class="span-label">et</span>
+                                <input type="number" ng-model="recipeSearch.maxCalories" placeholder="ex: 750">
+                            </p>
+                        </div>
+                        <div class="row search">
+                            <div>
+                                <button type="button" class="btn btn_color1" ng-click="searchRecipe()"><span class="glyphicon glyphicon-chevron-down"></span>Search, Lycos!</button>
+                                <button type="button" class="btn btn_color1" ng-show="recipeSearch.searchClicked" ng-click="clearSearchResults()"><span class="glyphicon glyphicon-chevron-down"></span>RAZ</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="sort" ng-show="recipeSearch.showSortArea">
+        <p>
+            <span class="span-label">Trier par :</span>
+            <select name="" id="" ng-model="recipeSearch.sortOrder">
+                <option name="az" value="+name">Ordre alphabétique (A->Z)</option>
+                <option name="za" value="-name">Ordre alphabétique (Z->A)</option>
+                <option name="new" value="-creationDate">Les plus récentes d'abord</option>
+                <option name="old" value="+creationDate">Les plus anciennes d'abord</option>
+                <option name="best" value="+ratings">Les mieux notées d'abord</option>
+                <option name="worst" value="-ratings">Les moins bien notées d'abord</option>
+                <option name="cal" value="+calories">Du moins calorique au plus calorique</option>
+                <option name="cal_desc" value="-calories">Du plus calorique au moins calorique</option>
+            </select>
+        </p>
+    </div>
+    <div class="result" ng-show="recipeSearch.searchClicked">
+        <h2 class="title">~ Résultats de la recherche ~</h2>
+        <div class="recettes row" ng-hide="recipeSearch.results.length">
+            <p class=" col-xs-12 blank">Aucune recette ne correspond à votre recherche</p>
+        </div>
+        <div class="recettes row" ng-show="recipeSearch.results.length">
+            <div class="col-xs-6 col-sm-3 recette" ng-repeat="result in recipeSearch.results | orderBy:recipeSearch.sortOrder">
+                <a href="#/recipe/{{result.id}}">
+                    <img src="img/recettes/{{result.picture}}" alt="{{result.name}}">
+                    <div class="top" title="note : {{result.ratings  | number:2 }}/{{maxHearts.length}}" ng-show="result.votes">
+                        <span class="note">
+                            <span class="glyphicon glyphicon-heart" ng-repeat="n in maxHearts | limitTo:result.ratings"></span>
+                        </span>
+                    </div>
+                    <div class="bot">
+                        <p class="name">{{result.name}}</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="section">
+    <h2 class="title">~ Meilleures recettes ~</h2>
+    <div class="recettes row">
+        <div class="recettes row">
+            <div class="col-xs-6 col-sm-3 recette" ng-repeat="recipe in recipes | filter:hasComments() | orderBy:'+name' | limitTo:topRecipesLimit">
+                <a href="#/recipe/{{recipe.id}}">
+                    <img src="img/recettes/{{recipe.picture}}" alt="{{recipe.name}}">
+                    <div class="top" title="note : {{recipe.ratings  | number:2 }}/{{maxHearts.length}}" ng-show="recipe.votes">
+                        <span class="note">
+                            <span class="glyphicon glyphicon-heart" ng-repeat="n in maxHearts | limitTo:recipe.ratings"></span>
+                        </span>
+                    </div>
+                    <div class="bot">
+                        <p class="name">{{recipe.name}}</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="section">
+    <h2 class="title">~ Nouvelles recettes ~</h2>
+    <div class="recettes row">
+        <div class="col-xs-6 col-sm-3 recette" ng-repeat="recipe in recipes | orderBy:'-creationDate' | limitTo:newRecipesLimit">
+            <a href="#/recipe/{{recipe.id}}">
+                <img src="img/recettes/{{recipe.picture}}" alt="{{recipe.name}}">
+                <div class="top" title="note : {{recipe.ratings  | number:2 }}/{{maxHearts.length}}" ng-show="recipe.votes">
+                    <span class="note">
+                        <span class="glyphicon glyphicon-heart" ng-repeat="n in maxHearts | limitTo:recipe.ratings"></span>
+                    </span>
+                </div>
+                <div class="bot">
+                    <p class="name">{{recipe.name}}</p>
+                </div>
+                <!--Créée le {{formatDate(recipe.creationDate)}} à {{formatTime(recipe.creationDate)}}-->
+            </a>
+        </div>
+    </div>
+</section>

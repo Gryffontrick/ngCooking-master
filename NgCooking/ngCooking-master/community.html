@@ -1,0 +1,44 @@
+﻿<h1 class="page-title">La communauté</h1>
+
+<section class="section">
+    <h2 class="title">~ Les meilleures cuistots ~</h2>
+    <div class="sort">
+        <p>
+            <span class="span-label">Trier par :</span>
+            <select name="" id="" ng-model="sortOrder">
+                <option name="az" value="+surname">Ordre alphabétique (A->Z)</option>
+                <option name="za" value="-surname">Ordre alphabétique (Z->A)</option>
+                <option name="exp" value="-ratings">Les mieux notés d'abord</option>
+                <option name="nov" value="+ratings">Les moins bien notés d'abord</option>
+                <option name="prod" value="-recipes.length">Les plus productifs d'abord</option>
+                <option name="prod_desc" value="+recipes.length">Les moins productifs d'abord</option>
+                <!--<option name="noobs" value="+signInDate">Les petits piou piou d'abord ^^</option>-->
+            </select>
+        </p>
+    </div>
+    <div class="users row">
+        <div class="col-xs-6 col-sm-3 user" ng-repeat="cook in community | orderBy:sortOrder | limitTo:displayLimit">
+            <a href="#/community/profile/{{cook.id}}">
+                <img src="{{cook.picture}}" alt="{{cook.firstname}} {{cook.surname}}">
+                <div class="text">
+                    <p class="name">{{cook.firstname}} {{cook.surname}}</p>
+                    <p class="level">
+                        <span class="stars">
+                            <span class="glyphicon glyphicon-star" ng-repeat="n in cookLevels | limitTo:cook.level"></span>
+                        </span>
+                        <span class="status">{{cook.textLevel}}</span>
+                    </p>
+                    <p class="level" ng-show="cook.ratings">
+                        <span class="status">Note : {{cook.ratings|number:2}}/5</span>
+                    </p>
+                </div>
+            </a>
+        </div>
+    </div>
+    <!-- TODO : afficher le bouton grisé lorsqu'on ne peut plus en montrer davantage -->
+    <div class="row showmore" ng-show="showShowMoreButton">
+        <div class="col-xs-12">
+            <button type="button" class="btn btn_color1" ng-click="showMore()"><span class="glyphicon glyphicon-chevron-down"></span>Afficher d'avantage</button>
+        </div>
+    </div>
+</section>

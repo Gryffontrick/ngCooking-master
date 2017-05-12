@@ -1,0 +1,90 @@
+﻿<h1 class="page-title">Les ingredients</h1>
+<div class="row">
+    <div class="col-xs-12">
+        <div class="panel">
+            <div class="row imgback">
+                <div class="hidden-xs col-sm-3"></div>
+                <div class="col-xs-12 col-sm-9 fp">
+                    <div class="filters">
+                        <form action="#" novalidate>
+                            <div class="filter">
+                                <p><label for="">Nom de l'ingrédient</label></p>
+                                <p><input type="text" placeholder="ex: Banane" ng-model="ingredientsSearch.name"></p>
+                            </div>
+                            <div class="filter">
+                                <p><label for="">Catégorie</label></p>
+                                <p>
+                                    <select name="" id="" ng-model="ingredientsSearch.categoryFilter">
+                                        <option value="">Toutes les catégories</option>
+                                        <option value="meat">Viandes</option>
+                                        <option value="vegetable">Légumes</option>
+                                        <option value="fruit">Fruits</option>
+                                        <option value="cereal">Céréales</option>
+                                        <option value="fish">Poissons</option>
+                                        <option value="seafood">Fruits de mer</option>
+                                        <option value="dairy-product">Produits laitiers</option>
+                                        <option value="cheese">Fromages</option>
+                                        <option value="alcohol">Alcool</option>
+                                        <option value="other">Divers</option>
+                                    </select>
+                                </p>
+                            </div>
+                            <div class="filter">
+                                <p><label for="">Nombre de calories <span class="fwn">(kcal/100g)</span></label></p>
+                                <p>
+                                    <span class="span-label">entre :</span>
+                                    <input type="number" class="mr0" placeholder="ex: 70" ng-model="ingredientsSearch.minCalories">
+                                    <span class="span-label">et</span>
+                                    <input type="number" placeholder="ex: 220" ng-model="ingredientsSearch.maxCalories">
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12">
+        <div class="result">
+            <div class="ingredients row" ng-repeat="ingredient in ingredients | filter:{name:ingredientsSearch.name, category:ingredientsSearch.categoryFilter} | filter:caloriesFilter('calories') | orderBy:'name' | limitTo:displayLimit">
+                <div class="col-xs-12 ingredient">
+                    <div class="ing-wrap">
+                        <div class="top">
+                            <p class="name">{{ingredient.name}}</p>
+                            <p class="category">{{ingredient.categoryDisplayName}}</p>
+                            <img class="img" src="img/ingredients/{{ingredient.picture}}" alt="{{ingredient.name}}">
+                            <div class="calories-wrap">
+                                <div class="val">
+                                    <span>{{ingredient.calories}} kcal</span>
+                                    <div class="battery">
+                                        <!-- pourcentage ci-dessous à moduler en fonction du nombre de calories de l'ingredient sur nombre de calories max -->
+                                        <!-- Note : max = 1000 kcal -->
+                                        <div class="level" style="width: {{ingredient.calories / 10}}%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bot">
+                            <p class="description">{{ingredient.description}}</p>
+                            <div class="list">
+                                <p class="list-title">Aliments similaires</p>
+                                <ul>
+                                    <li class="item" ng-repeat="friend in ingredient.similars">
+                                        <img class="item-img" src="img/ingredients/{{friend.picture}}" alt="{{friend.name}}">
+                                        <p class="item-name" title="{{friend.name}}">{{friend.name}}</p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- TODO : afficher le bouton grisé lorsqu'on ne peut plus en montrer davantage -->
+        <div class="row showmore" ng-show="showShowMoreButton">
+            <div class="col-xs-12">
+                <button type="button" class="btn btn_color1" ng-click="showMore()"><span class="glyphicon glyphicon-chevron-down"></span>Afficher d'avantage</button>
+            </div>
+        </div>
+    </div>
+</div>

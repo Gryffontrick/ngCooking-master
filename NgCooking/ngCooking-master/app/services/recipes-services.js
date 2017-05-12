@@ -1,0 +1,124 @@
+﻿(function () {
+
+    var recipesServices = function ($http) {
+
+        var getRecipes = function () {
+            return $http.get("json/recipes.json")
+              .then(function (response) {
+                  var recipes = response.data;
+
+                  if (recipes) {
+                      var ratingsBundle = null;
+                      recipes.forEach((recipe) => {
+                          // ratings
+                          ratingsBundle = getRecipeRatings(recipe);
+                          if (ratingsBundle != null) {
+                              recipe.ratings = ratingsBundle.ratings;
+                              recipe.votes = ratingsBundle.votes;
+                          }
+                      });
+                  }
+
+                  return recipes;
+              });
+        };
+
+        var getTopRecipes = function () {
+            return getRecipes().then(function (recipes) {
+                return recipes.filter(recipe => recipe.comments)
+                    .sort((recipeA, recipeB) => {
+                        return recipeA.ratings > recipeB.ratings;
+                    });
+            });
+        };
+
+        var getLatestRecipes = function () {
+            return getRecipes().then(function (recipes) {
+                return recipes.sort(function (a, b) {
+                    return b.creationDate - a.creationDate;
+                });
+            });
+        };
+
+        var getRecipeById = function (recipeId) {
+            return getRecipes().then(function (recipes) {
+                return recipes.find(recipe => {
+                    return recipe.id == recipeId;
+                });
+            });
+        };
+
+        var getRecipesByCook = function (cookId) {
+            return getRecipes()
+              .then(function (recipes) {
+                    return recipes.filter(function (recipe) {
+                        return recipe.creatorId == cookId;
+                    });
+              });
+        };
+
+        var getRecipeRatings = function (recipe) {
+            var ratingsBundle = null;
+
+            if (recipe) {
+                if (recipe.comments) {
+
+                    ratingsBundle = {
+                        ratings: 0,
+                        votes: 0
+                    };
+
+                    recipe.comments.forEach((comment) => {
+                        if (comment.mark != null) {
+                            ratingsBundle.ratings += comment.mark;
+                            ratingsBundle.votes++;
+                        }
+                    });
+
+                    ratingsBundle.ratings /= ratingsBundle.votes;
+                }
+            }
+
+            return ratingsBundle;
+        };
+
+        var addRecipe = function (recipe) {
+            getRecipes().then(function (data) {
+                recipes = data;
+                recipes.push(recipe);
+
+                var config = {
+                    header: {
+                        "Content-Type": "application/json"
+                    }
+                };
+
+                var res = $http.post("./recipes.json", { test: "test" }, config).subscribe();
+
+                res.success(function (data, status, headers, config) {
+                    alert("POST ok");
+                });
+                res.error(function (data, status, headers, config) {
+                    alert("failure message: " + JSON.stringify({ data: data }));
+                });
+                //var stringRecipes = JSON.stringify(recipe);
+
+                //var blob = new Blob([stringRecipes], { type: "text/plain;charset=utf-8" });
+                //FileSaver.saveAs(blob, "../../json/recipes.json");
+            });
+        };
+
+        return {
+            getRecipes: getRecipes,
+            getRecipesByCook: getRecipesByCook,
+            getRecipeById: getRecipeById,
+            getRecipeRatings: getRecipeRatings,
+            addRecipe: addRecipe,
+            getTopRecipes: getTopRecipes,
+            getLatestRecipes: getLatestRecipes
+        };
+    };
+
+    var NgCooking = angular.module("NgCooking");
+    NgCooking.factory("recipesServices", recipesServices);
+}());

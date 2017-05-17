@@ -26,10 +26,10 @@
                         });
                     });
 
-                    ingredientsServices.getIngredientsByRecipe($scope.currentRecipe)
-                        .then(function (recipeIngredients) {
-                            $scope.currentRecipe.listIngredients = recipeIngredients;
-                        });
+                    //ingredientsServices.getIngredientsByRecipe($scope.currentRecipe)
+                    //    .then(function (recipeIngredients) {
+                    //        $scope.currentRecipe.listIngredients = recipeIngredients;
+                    //    });
 
                     $scope.showShowMoreButton = ($scope.currentRecipe.comments.length > $scope.displayLimit);
                 });

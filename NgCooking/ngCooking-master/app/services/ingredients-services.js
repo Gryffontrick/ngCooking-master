@@ -5,8 +5,13 @@
         var ingredients = [];
 
         var getIngredients = function () {
-            return $http.get("json/ingredients.json")
-              .then(function (response) {
+            //return $http.get("json/ingredients.json")
+            return $http({
+                method: 'GET',
+                url: "http://localhost:54224/api/Ingredients/",
+                headers: { 'Content-Type': 'application/json' }
+            })
+              .then(function (response) { 
                   ingredients = response.data;
                   return response.data;
               });

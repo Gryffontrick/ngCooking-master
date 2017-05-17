@@ -11,44 +11,44 @@ using System.Web.Http.Cors;
 namespace NgCookingServices.Controllers
 {
     [EnableCors(origins: "http://localhost:63280", headers: "*", methods: "*")]
-    public class CooksController : ApiController
+    public class RecipesController : ApiController
     {
         private NgCookingServicesContext db = new NgCookingServicesContext();
 
-        // GET: api/Cooks
-        public IQueryable<Cook> GetCooks()
+        // GET: api/Recipes
+        public IQueryable<Recipe> GetRecipes()
         {
-            return db.Cooks;
+            return db.Recipes;
         }
 
-        // GET: api/Cooks/5
-        [ResponseType(typeof(Cook))]
-        public IHttpActionResult GetCook(int id)
+        // GET: api/Recipes/5
+        [ResponseType(typeof(Recipe))]
+        public IHttpActionResult GetRecipe(string id)
         {
-            Cook cook = db.Cooks.Find(id);
-            if (cook == null)
+            Recipe recipe = db.Recipes.Find(id);
+            if (recipe == null)
             {
                 return NotFound();
             }
 
-            return Ok(cook);
+            return Ok(recipe);
         }
 
-        // PUT: api/Cooks/5
+        // PUT: api/Recipes/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutCook(int id, Cook cook)
+        public IHttpActionResult PutRecipe(string id, Recipe recipe)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != cook.Id)
+            if (id != recipe.Id)
             {
                 return BadRequest();
             }
 
-            db.Entry(cook).State = EntityState.Modified;
+            db.Entry(recipe).State = EntityState.Modified;
 
             try
             {
@@ -56,7 +56,7 @@ namespace NgCookingServices.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CookExists(id))
+                if (!RecipeExists(id))
                 {
                     return NotFound();
                 }
@@ -69,35 +69,50 @@ namespace NgCookingServices.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/Cooks
-        [ResponseType(typeof(Cook))]
-        public IHttpActionResult PostCook(Cook cook)
+        // POST: api/Recipes
+        [ResponseType(typeof(Recipe))]
+        public IHttpActionResult PostRecipe(Recipe recipe)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            db.Cooks.Add(cook);
-            db.SaveChanges();
+            db.Recipes.Add(recipe);
 
-            return CreatedAtRoute("DefaultApi", new { id = cook.Id }, cook);
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (DbUpdateException)
+            {
+                if (RecipeExists(recipe.Id))
+                {
+                    return Conflict();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return CreatedAtRoute("DefaultApi", new { id = recipe.Id }, recipe);
         }
 
-        // DELETE: api/Cooks/5
-        [ResponseType(typeof(Cook))]
-        public IHttpActionResult DeleteCook(int id)
+        // DELETE: api/Recipes/5
+        [ResponseType(typeof(Recipe))]
+        public IHttpActionResult DeleteRecipe(string id)
         {
-            Cook cook = db.Cooks.Find(id);
-            if (cook == null)
+            Recipe recipe = db.Recipes.Find(id);
+            if (recipe == null)
             {
                 return NotFound();
             }
 
-            db.Cooks.Remove(cook);
+            db.Recipes.Remove(recipe);
             db.SaveChanges();
 
-            return Ok(cook);
+            return Ok(recipe);
         }
 
         protected override void Dispose(bool disposing)
@@ -109,9 +124,9 @@ namespace NgCookingServices.Controllers
             base.Dispose(disposing);
         }
 
-        private bool CookExists(int id)
+        private bool RecipeExists(string id)
         {
-            return db.Cooks.Count(e => e.Id == id) > 0;
+            return db.Recipes.Count(e => e.Id == id) > 0;
         }
     }
 }

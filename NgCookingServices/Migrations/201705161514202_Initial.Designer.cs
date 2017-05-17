@@ -13,7 +13,7 @@ namespace NgCookingServices.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201705110852152_Initial"; }
+            get { return "201705161514202_Initial"; }
         }
         
         string IMigrationMetadata.Source

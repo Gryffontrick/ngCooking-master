@@ -2,20 +2,30 @@
 
     var recipesServices = function ($http) {
 
+        var formatRecipe = function (recipe)
+        {
+            var ratingsBundle = getRecipeRatings(recipe);
+
+            if (ratingsBundle != null) {
+                recipe.ratings = ratingsBundle.ratings;
+                recipe.votes = ratingsBundle.votes;
+            }
+
+            return recipe;
+        };
+
         var getRecipes = function () {
-            return $http.get("json/recipes.json")
+            //return $http.get("json/recipes.json")
+            return $http({
+                method: 'GET',
+                url: "http://localhost:54224/api/Recipes/",
+                headers: { 'Content-Type': 'application/json' }
+            })
               .then(function (response) {
                   var recipes = response.data;
-
                   if (recipes) {
-                      var ratingsBundle = null;
                       recipes.forEach((recipe) => {
-                          // ratings
-                          ratingsBundle = getRecipeRatings(recipe);
-                          if (ratingsBundle != null) {
-                              recipe.ratings = ratingsBundle.ratings;
-                              recipe.votes = ratingsBundle.votes;
-                          }
+                          formatRecipe(recipe);
                       });
                   }
 
@@ -23,37 +33,24 @@
               });
         };
 
-        var getTopRecipes = function () {
-            return getRecipes().then(function (recipes) {
-                return recipes.filter(recipe => recipe.comments)
-                    .sort((recipeA, recipeB) => {
-                        return recipeA.ratings > recipeB.ratings;
-                    });
-            });
-        };
-
-        var getLatestRecipes = function () {
-            return getRecipes().then(function (recipes) {
-                return recipes.sort(function (a, b) {
-                    return b.creationDate - a.creationDate;
-                });
-            });
-        };
-
         var getRecipeById = function (recipeId) {
-            return getRecipes().then(function (recipes) {
-                return recipes.find(recipe => {
-                    return recipe.id == recipeId;
-                });
+            //return getRecipes()
+            return $http({
+                method: 'GET',
+                url: "http://localhost:54224/api/Recipes/" + recipeId,
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(function (response) {
+                return formatRecipe(response.data);
             });
         };
 
         var getRecipesByCook = function (cookId) {
             return getRecipes()
               .then(function (recipes) {
-                    return recipes.filter(function (recipe) {
-                        return recipe.creatorId == cookId;
-                    });
+                  return recipes.filter(function (recipe) {
+                      return recipe.creatorId == cookId;
+                  });
               });
         };
 

@@ -4,6 +4,23 @@
         var cookLevels = ["Rookie", "Confirmed", "Expert"];
         var recipes = [];
 
+        // ------------------------------------------------------------
+        // Helpers
+        // ------------------------------------------------------------
+        var getCookRatings = function (cook) {
+            cook.ratings = 0.0;
+
+            if (cook.recipes) {
+                cook.recipes.forEach((recipe) => {
+                    cook.ratings += recipe.ratings;
+                });
+
+                cook.ratings /= cook.recipes.length;
+            }
+
+            return cook.ratings;
+        };
+
         var formatCook = function (cook) {
             // Age
             cook.age = (new Date(Date.now())).getFullYear() - cook.birth;    // TODO : Faire ça plus proprement, en prenant en compte le timestamp
@@ -21,9 +38,11 @@
             return cook;
         };
 
+        // ------------------------------------------------------------
+        // Services
+        // ------------------------------------------------------------
         var getCommunity = function () {
             //return $http.get("json/community.json")
-            //return $http.get("https://api.github.com/users/gryffontrick")
             return $http({
                 method: 'GET',
                 url: "http://localhost:54224/api/Cooks",
@@ -72,20 +91,9 @@
             return levelText;
         };
 
-        var getCookRatings = function (cook) {
-            cook.ratings = 0.0;
-
-            if (cook.recipes) {
-                cook.recipes.forEach((recipe) => {
-                    cook.ratings += recipe.ratings;
-                });
-
-                cook.ratings /= cook.recipes.length;
-            }
-
-            return cook.ratings;
-        };
-
+        // ------------------------------------------------------------
+        // Exposing
+        // ------------------------------------------------------------
         return {
             getCommunity: getCommunity,
             getUserByLogin: getUserByLogin,

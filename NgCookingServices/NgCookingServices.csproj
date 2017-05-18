@@ -123,6 +123,10 @@
     <Compile Include="Migrations\201705161514202_Initial.Designer.cs">
       <DependentUpon>201705161514202_Initial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201705180844482_StableSiteBeforeIdentityFwk.cs" />
+    <Compile Include="Migrations\201705180844482_StableSiteBeforeIdentityFwk.Designer.cs">
+      <DependentUpon>201705180844482_StableSiteBeforeIdentityFwk.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\NgCookingServicesContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -154,6 +158,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201705161514202_Initial.resx">
       <DependentUpon>201705161514202_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705180844482_StableSiteBeforeIdentityFwk.resx">
+      <DependentUpon>201705180844482_StableSiteBeforeIdentityFwk.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

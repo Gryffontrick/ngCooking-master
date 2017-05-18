@@ -33,6 +33,23 @@
               });
         };
 
+        var getTopRecipes = function () {
+            return getRecipes().then(function (recipes) {
+                return recipes.filter(recipe => recipe.comments)
+                    .sort((recipeA, recipeB) => {
+                        return recipeA.ratings > recipeB.ratings;
+                    });
+            });
+        };
+
+        var getLatestRecipes = function () {
+            return getRecipes().then(function (recipes) {
+                return recipes.sort(function (a, b) {
+                    return b.creationDate - a.creationDate;
+                });
+            });
+        };
+
         var getRecipeById = function (recipeId) {
             //return getRecipes()
             return $http({
